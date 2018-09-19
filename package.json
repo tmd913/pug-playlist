@@ -1,0 +1,25 @@
+{
+  "name": "project1",
+  "version": "1.0.0",
+  "description": "pug spotify playlist app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tmd913/project1.git"
+  },
+  "author": "Tom Schofield, Tom Dennis, Oumar Oumar, Thor Lucas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tmd913/project1/issues"
+  },
+  "homepage": "https://github.com/tmd913/project1#readme",
+  "dependencies": {
+    "ejs": "^2.6.1",
+    "express": "^4.16.3",
+    "nodemon": "^1.18.4",
+    "socket.io": "^2.1.1"
+  }
+}
