@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Spotify Member Info</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <div id="loggedin">
+            <div id="user-profile">
+                <h1>Logged in as <span id="name"></span></h1>
+                <div class="media">
+                    <div class="pull-left">
+                        <img id="image" class="media-object" width="150" src="" />
+                    </div>
+                    <div class="media-body">
+                        <dl class="dl-horizontal">
+                            <dt>Display name</dt>
+                            <dd class="clearfix" id="display-name"></dd>
+                            <dt>Id</dt>
+                            <dd id="id"></dd>
+                            <dt>Email</dt>
+                            <dd id="email"></dd>
+                            <dt>Spotify URI</dt>
+                            <dd>
+                                <a href="" id="uri"></a>
+                            </dd>
+                            <dt>Link</dt>
+                            <dd>
+                                <a href="" id="href"></a>
+                            </dd>
+                            <dt>Profile Image</dt>
+                            <dd class="clearfix">
+                                <a href="" id="image-link"></a>
+                            </dd>
+                            <dt>Country</dt>
+                            <dd id="country"></dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+            <div id="oauth">
+                <h2>oAuth info</h2>
+                <dl class="dl-horizontal">
+                    <dt>Access token</dt>
+                    <dd id="access-token"></dd>
+                    <dt>Refresh token</dt>
+                    <dd id="refresh-token"></dd>
+                </dl>
+            </div>
+            <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button>
+            <input type="text">
+            <button class="btn btn-default" id="search-song">Search</button>
+        </div>
+    </div>
+
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript" src="./js/user.js"></script>
+</body>
+
+</html>

@@ -18,9 +18,14 @@
   },
   "homepage": "https://github.com/tmd913/project1#readme",
   "dependencies": {
+    "cookie-parser": "^1.4.3",
+    "cors": "^2.8.4",
     "ejs": "^2.6.1",
     "express": "^4.16.3",
     "nodemon": "^1.18.4",
-    "socket.io": "^2.1.1"
+    "path": "^0.12.7",
+    "socket.io": "^2.1.1",
+    "spotify-web-api-js": "^1.1.1",
+    "spotify-web-api-node": "^4.0.0"
   }
 }
