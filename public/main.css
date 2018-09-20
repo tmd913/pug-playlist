@@ -1,0 +1,19 @@
+.playlist-queue{
+    border: 5px solid green;
+    text-align: center;
+}
+
+#title{
+    text-align: center;
+}
+
+.inputMessage{
+    width: 95%;
+}
+.usernameInput{
+    width: 95%;
+}
+
+.message{
+    text-align: left;
+}
