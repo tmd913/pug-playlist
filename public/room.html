@@ -15,8 +15,22 @@ as well as the github repo at https://github.com/ngrt/simpleChatApp and modified
 
 <body>
 
-  <div class="playlist-queue">
+  <div class="playlist display-none">
     <h1 id="title">Pug Room</h1>
+    <div id="users"></div>
+    <input class="searchBar" placeholder="Search" />
+    <div class="playlistHistory"></div>
+    <div class="playlistCurrent"></div>
+    <div class="playlistQueue"></div>
+  </div>
+
+  <div class="usernamePage">
+    <div class="form">
+      <h3 class="title">Enter a username: </h3>
+      <input class="usernameInput" type="text" maxlength="14" />
+    </div>
+  </div>
+      <!-- 
     <ul class="pages">
       <li class="chat page">
         <div class="chatArea">
@@ -24,21 +38,22 @@ as well as the github repo at https://github.com/ngrt/simpleChatApp and modified
         </div>
         <input class="inputMessage" placeholder="Type here..." />
       </li>
-      <li class="login page">
+      <div class="login page">
         <div class="form">
-          <h3 class="title">What's your nickname?</h3>
+          <h3 class="title">Enter a username: </h3>
           <input class="usernameInput" type="text" maxlength="14" />
         </div>
-      </li>
-    </ul>
-  </div>
+      <div>
+    </ul> -->
 
 
 
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-    crossorigin="anonymous"></script>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="./chat.js"></script>
+
+      <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+      <script src="/socket.io/socket.io.js"></script>
+      <script src="./chat.js"></script>
+
 </body>
 
 </html>
