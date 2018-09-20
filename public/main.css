@@ -1,14 +1,24 @@
-.playlist-queue{
-    border: 5px solid green;
+.playlist{
+    border: 5px solid rgb(212, 190, 63);
     text-align: center;
+    background-color: rgb(31, 30, 30);
 }
 
 #title{
     text-align: center;
+    color: rgb(212, 190, 63);
+    background-color: rgb(31, 30, 30);
+    font-size: 48pt;
+}
+#users{
+    color: rgb(212, 190, 63);
+    margin: 15px;
 }
 
-.inputMessage{
+.searchBar{
     width: 95%;
+    margin: 10px;
+    background-color:rgb(226, 226, 226); 
 }
 .usernameInput{
     width: 95%;
@@ -16,4 +26,9 @@
 
 .message{
     text-align: left;
+}
+
+
+.display-none{
+    display: none;
 }
