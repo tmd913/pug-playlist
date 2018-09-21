@@ -1744,8 +1744,6 @@
     var SpotifyWebApi = require('spotify-web-api-js');
     var spotify = new SpotifyWebApi();
 
-    var oauthPlaceholder = $('#oauth');
-
     $.get('/credentials', function (data) {
       // var params = getHashParams();
 
@@ -1758,7 +1756,7 @@
 
       window.onSpotifyWebPlaybackSDKReady = () => {
         const player = new Spotify.Player({
-          name: 'Web Playback SDK Quick Start Player',
+          name: 'Pug Player',
           getOAuthToken: cb => { cb(access_token); }
         });
 
@@ -1860,7 +1858,7 @@
         );
       });
 
-      $(document).on("click", ".song-container", function () {
+      $(document).on("click", "#search-results > .song-container", function () {
         $("#search-results").empty();
         $("#song-queue").append($(this));
       });
