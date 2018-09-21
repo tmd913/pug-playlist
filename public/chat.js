@@ -23,12 +23,6 @@ $(function () {
     var $playlist = $('.playlist'); // The playlist page
     var $events = $('.events'); // The events box
     
-
-
-    var a = [];
-    a.push(JSON.parse(localStorage.getItem('playlist-history')));
-    localStorage.setItem('playlist-history', JSON.stringify(a));
-    
     // Prompt for setting a username
     var username;
     var typing = false;
@@ -68,29 +62,6 @@ $(function () {
             socket.emit('add user', username);
         }
     }
-
-    function loadPlaylistQueue() {
-        if (typeof localStorage.getItem("playlist-history") !== "null") {
-            $playlistQueue.append(localStorage.getItem("playlist-history"));
-            console.log(localStorage.getItem("playlist-history"));
-            console.log("ran load playlist queue");
-        }
-    }
-
-
-    function SaveDataToLocalStorage(data) {
-        var a;
-        // Parse the serialized data back into an aray of objects
-        a = JSON.parse(localStorage.getItem('playlist-history'));
-        // Push the new data (whether it be an object or anything else) onto the array
-        a.push(data);
-        // Alert the array value
-        // alert(a);  // Should be something like [Object array]
-        // Re-serialize the array back into a string and store it in localStorage
-        localStorage.setItem('playlist-history', JSON.stringify(a));
-    }
-
-
 
     // Sends a chat message
     function sendSong() {
@@ -134,14 +105,6 @@ $(function () {
             .css('color', getUsernameColor(data.username));
         var $messageBodyDiv = $('<span class="messageBody">')
             .text(data.message);
-
-
-        var localObject = {
-            username: data.username,
-            message: data.message
-        }
-
-        SaveDataToLocalStorage(localObject);
 
         var typingClass = data.typing ? 'typing' : '';
         var $messageDiv = $('<li class="message"/>')
