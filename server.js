@@ -7,6 +7,8 @@
  * https://developer.spotify.com/web-api/authorization-guide/#authorization_code_flow
  */
 var express = require('express'); // Express web server framework
+var cors = require('cors');
+var cookieParser = require('cookie-parser');
 
 const PORT = process.env.PORT || 3000;
 
@@ -18,8 +20,11 @@ var client_secret = AuthConfig.CLIENT_SECRET; // Your secret
 var redirect_uri = `${AppConfig.HOST}/callback`; // Your redirect uri
 
 var app = express();
+app.use(express.static('public'))
+  .use(cors())
+  .use(cookieParser());
 
-require('./routing/auth')(app, express, client_id, client_secret, redirect_uri);
+require('./routing/auth')(app, client_id, client_secret, redirect_uri);
 
 app.listen(PORT, err => {
   if (err) throw err;

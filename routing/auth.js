@@ -1,16 +1,13 @@
 var request = require('request'); // "Request" library
-var cors = require('cors');
 var querystring = require('querystring');
-var cookieParser = require('cookie-parser');
 var path = require('path');
-var SpotifyWebApi = require('spotify-web-api-node');
 
-module.exports = (app, express, client_id, client_secret, redirect_uri) => {
+module.exports = function (app, client_id, client_secret, redirect_uri) {
     /**
- * Generates a random string containing numbers and letters
- * @param  {number} length The length of the string
- * @return {string} The generated string
- */
+    * Generates a random string containing numbers and letters
+    * @param  {number} length The length of the string
+    * @return {string} The generated string
+    */
     var generateRandomString = function (length) {
         var text = '';
         var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -22,17 +19,6 @@ module.exports = (app, express, client_id, client_secret, redirect_uri) => {
     };
 
     var stateKey = 'spotify_auth_state';
-
-    app.use(express.static('public'))
-        .use(cors())
-        .use(cookieParser());
-
-    // credentials are optional
-    var spotifyApi = new SpotifyWebApi({
-        clientId: client_id,
-        clientSecret: client_secret,
-        redirectUri: redirect_uri
-    });
 
     app.get('/', function (req, res) {
         res.sendFile(path.join(__dirname, '../public/login.html'));
@@ -91,28 +77,14 @@ module.exports = (app, express, client_id, client_secret, redirect_uri) => {
                     var access_token = body.access_token;
                     var refresh_token = body.refresh_token;
 
-                    spotifyApi.setAccessToken(access_token);
+                    currentCredentials = {
+                        "accessToken": access_token,
+                        "refreshToken": refresh_token
+                    };
 
-                    spotifyApi.searchTracks(
-                        'track: be like you',
-                        { limit: 10, offset: 0 },
-                        function (err, data) {
-                            if (err) {
-                                console.error('Something went wrong!');
-                            } else {
-                                console.log('-----------------');
-                                console.log('Tracks');
-                                console.log('-----------------');
-                                data.body.tracks.items.forEach(track => {
-                                    console.log(track.name);
-                                    track.artists.forEach(artist => {
-                                        console.log(artist.name);
-                                    });
-                                    console.log('--------');
-                                });
-                            }
-                        }
-                    );
+                    app.get('/credentials', function (req, res) {
+                        res.json(currentCredentials);
+                    })
 
                     var options = {
                         url: 'https://api.spotify.com/v1/me',
@@ -143,13 +115,7 @@ module.exports = (app, express, client_id, client_secret, redirect_uri) => {
                         });
                     });
 
-                    // we can also pass the token to the browser to make requests from there
-                    // res.redirect('/#' +
-                    //   querystring.stringify({
-                    //     access_token: access_token,
-                    //     refresh_token: refresh_token
-                    //   }));
-                    res.redirect(path.join(__dirname, './public/user.html'));
+                    res.redirect('/user');
                 } else {
                     res.redirect('/#' +
                         querystring.stringify({
@@ -165,7 +131,6 @@ module.exports = (app, express, client_id, client_secret, redirect_uri) => {
     });
 
     app.get('/refresh_token', function (req, res) {
-
         // requesting access token from refresh token
         var refresh_token = req.query.refresh_token;
         var authOptions = {
@@ -188,4 +153,3 @@ module.exports = (app, express, client_id, client_secret, redirect_uri) => {
         });
     });
 }
-
