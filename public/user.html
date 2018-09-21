@@ -9,8 +9,16 @@
             margin: 10px;
         }
 
+        .display-none {
+            display: none;
+        }
+
         .song-container>p {
             margin: 0;
+        }
+
+        img {
+            width: 150px;
         }
     </style>
 </head>
@@ -18,7 +26,7 @@
 <body>
     <div class="container">
         <div id="loggedin">
-            <div id="user-profile">
+            <div id="user-profile" class="display-none">
                 <h1>Logged in as
                     <span id="name"></span>
                 </h1>
@@ -73,6 +81,7 @@
                 </div>
 
                 <div class="col-md-6">
+                    <div class="main-container" id="js-main-container"></div>
                     <div id="song-queue"></div>
                 </div>
             </div>
