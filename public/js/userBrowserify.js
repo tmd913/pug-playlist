@@ -1744,15 +1744,30 @@
     var SpotifyWebApi = require('spotify-web-api-js');
     var spotify = new SpotifyWebApi();
 
+    var mainContainer = document.getElementById('js-main-container');
+
+    var template = function (data) {
+      return `
+    <div class="main-wrapper">
+      <div class="now-playing__img">
+        <img src="${data.item.album.images[0].url}">
+      </div>
+      <div class="now-playing__side">
+        <div class="now-playing__name">${data.item.name}</div>
+        <div class="now-playing__artist">${data.item.artists[0].name}</div>
+        <div class="now-playing__status">${data.is_playing ? 'Playing' : 'Paused'}</div>
+        <div class="progress">
+          <div class="progress__bar" style="width:${data.progress_ms * 100 / data.item.duration_ms}%"></div>
+        </div>
+      </div>
+    </div>
+    <div class="background" style="background-image:url(${data.item.album.images[0].url})"></div>
+  `;
+    };
+
     $.get('/credentials', function (data) {
-      // var params = getHashParams();
-
-      // var access_token = params.access_token;
       var access_token = data.accessToken;
-      // var refresh_token = params.refresh_token;
       var refresh_token = data.refreshToken;
-
-      // var error = params.error;
 
       window.onSpotifyWebPlaybackSDKReady = () => {
         const player = new Spotify.Player({
@@ -1767,7 +1782,18 @@
         player.addListener('playback_error', ({ message }) => { console.error(message); });
 
         // Playback status updates
-        player.addListener('player_state_changed', state => { console.log(state); });
+        player.addListener('player_state_changed', state => {
+          console.log(state);
+          spotify.getMyCurrentPlayingTrack({}, function (err, data) {
+            if (err) {
+              console.log('Something went wrong!');
+            } else {
+              console.log(data.item.name);
+              mainContainer.innerHTML = template(data);
+              console.log(template(data));
+            }
+          });
+        });
 
         // Ready
         player.addListener('ready', ({ device_id }) => {
@@ -1856,12 +1882,14 @@
             }
           }
         );
+
       });
 
       $(document).on("click", "#search-results > .song-container", function () {
         $("#search-results").empty();
         $("#song-queue").append($(this));
       });
+
     });
 
   }, { "spotify-web-api-js": 1 }]

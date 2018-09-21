@@ -108,6 +108,7 @@ module.exports = function (app, client_id, client_secret, redirect_uri) {
 
                         // use the access token to access the Spotify Web API
                         request.get(options, function (error, response, body) {
+                            console.log('-----------------');
                             console.log('User Playlist');
                             console.log('-----------------');
                             console.log(body.items[0]);
