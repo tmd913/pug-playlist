@@ -4,6 +4,21 @@
     background-color: rgb(31, 30, 30);
 }
 
+.playlistQueue{
+    border: 5px solid rgb(31, 30, 30);
+    text-align: center;
+    background-color: rgb(212, 190, 63);
+}
+
+
+.events{
+    float: left;
+    width: 30%;
+    border: 5px solid rgb(31, 30, 30);
+    text-align: center;
+    background-color: rgb(212, 190, 63);
+}
+
 #title{
     text-align: center;
     color: rgb(212, 190, 63);
