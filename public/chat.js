@@ -22,11 +22,13 @@ $(function () {
     var $usernamePage = $('.usernamePage'); // The page where the user enters display name
     var $playlist = $('.playlist'); // The playlist page
     var $events = $('.events'); // The events box
+    
+
 
     var a = [];
     a.push(JSON.parse(localStorage.getItem('playlist-history')));
     localStorage.setItem('playlist-history', JSON.stringify(a));
-
+    
     // Prompt for setting a username
     var username;
     var typing = false;
@@ -68,7 +70,7 @@ $(function () {
     }
 
     function loadPlaylistQueue() {
-        if (localStorage.getItem("playlist-history") != "[[null]]") {
+        if (typeof localStorage.getItem("playlist-history") !== "null") {
             $playlistQueue.append(localStorage.getItem("playlist-history"));
             console.log(localStorage.getItem("playlist-history"));
             console.log("ran load playlist queue");
@@ -77,7 +79,7 @@ $(function () {
 
 
     function SaveDataToLocalStorage(data) {
-        var a = [];
+        var a;
         // Parse the serialized data back into an aray of objects
         a = JSON.parse(localStorage.getItem('playlist-history'));
         // Push the new data (whether it be an object or anything else) onto the array
@@ -221,12 +223,12 @@ $(function () {
         }
     }
 
-    // // Gets the 'X is typing' messages of a user
-    // function getTypingMessages(data) {
-    //     return $('.typing.message').filter(function (i) {
-    //         return $(this).data('username') === data.username;
-    //     });
-    // }
+    // Gets the 'X is typing' messages of a user
+    function getTypingMessages(data) {
+        return $('.typing.message').filter(function (i) {
+            return $(this).data('username') === data.username;
+        });
+    }
 
     // Gets the color of a username through our hash function
     function getUsernameColor(username) {
