@@ -1883,13 +1883,13 @@
           }
         })
 
-        setTimeout( () => {
-          nextSong(q);
-        }, q.first().duration_ms);
-
         // setTimeout( () => {
         //   nextSong(q);
-        // }, 5000);
+        // }, q.first().duration_ms);
+
+        setTimeout( () => {
+          nextSong(q);
+        }, 10000);
       }
 
       function addParticipantsMessage(data) {
