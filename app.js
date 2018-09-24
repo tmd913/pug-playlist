@@ -16,12 +16,11 @@ server.listen(port, () => {
 app.use(express.static("public"));
 
 // Chatroom
-
 var numUsers = 0;
 
 app.get('/', function (req, res) {
-    res.sendFile(__dirname + '/public/room.html');
-  });
+  res.sendFile(__dirname + '/public/room.html');
+});
 
 io.on('connection', (socket) => {
   var addedUser = false;

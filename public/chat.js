@@ -55,7 +55,7 @@ $.get('/credentials', function (data) {
             $currentInput = $searchBar.focus();
 
             // Tell the server your username
-            console.log(socket.emit('add user', username));
+            // console.log(socket.emit('add user', username));
             socket.emit('add user', username);
         }
     }
