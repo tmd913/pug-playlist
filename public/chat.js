@@ -4,7 +4,6 @@
 
 $(function () {
     var FADE_TIME = 550; // ms
-    var TYPING_TIMER_LENGTH = 400; // ms
     var COLORS = [
         '#001f3f ', '#0074D9', '#7FDBFF', '#39CCCC',
         '#7FDBFF', '#GREEN', '#7FDBFF', '#01FF70',
@@ -55,7 +54,7 @@ $(function () {
             $currentInput = $searchBar.focus();
 
             // Tell the server your username
-            console.log(socket.emit('add user', username));
+            // console.log(socket.emit('add user', username));
             socket.emit('add user', username);
         }
     }
@@ -162,8 +161,6 @@ $(function () {
         if (event.which === 13) {
             if (username) {
                 sendSong();
-                socket.emit('stop typing');
-                typing = false;
             } else {
                 setUsername();
             }
