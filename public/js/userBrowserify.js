@@ -1747,7 +1747,7 @@
     var mainContainer = document.getElementById('js-main-container');
 
     var searchItems = [];
-    // var currentSongInfo;
+    var selectedSong;
 
     var template = function (data) {
       return `
@@ -1830,6 +1830,68 @@
 
       var socket = io();
 
+      function Queue() {
+        this.data = [];
+      }
+
+      Queue.prototype.add = function (song) {
+        this.data.push(song);
+      }
+      Queue.prototype.remove = function () {
+        this.data.shift();
+      }
+
+      Queue.prototype.first = function () {
+        if (typeof this.data != "undefined") {
+          return this.data[0];
+        }
+      }
+      Queue.prototype.last = function () {
+        if (typeof this.data != "undefined") {
+          return this.data[this.data.length - 1];
+        }
+
+      }
+      Queue.prototype.size = function () {
+        return this.data.length;
+      }
+
+      var q = new Queue();
+
+      // set time interval in ms + 1000
+      // if playlist queue empty, play the song
+      // else, add to playlist queue
+      // add previous song to history
+      function nextSong(queue) {
+        $playlistHistory.append(queue.first);
+        queue.remove();
+        $playlistCurrent.empty();
+        $playlistCurrent.append(queue.first);
+        console.log(queue.first().name);
+        mainContainer.innerHTML = template(queue.first());
+        playSong();
+      }
+
+      // playSong()
+      function playSong() {
+        spotify.play({ "uris": [q.first().uri] }, function (err, data) {
+          if (err) {
+            console.error('Something went wrong!');
+          } else {
+            console.log('playing song');
+            console.log(q.first().name);
+          }
+        })
+
+        setTimeout( () => {
+          nextSong(q);
+        }, q.first().duration_ms);
+
+        // setTimeout( () => {
+        //   nextSong(q);
+        // }, 5000);
+      }
+
       function addParticipantsMessage(data) {
         var message = '';
         if (data.numUsers === 1) {
@@ -1860,7 +1922,7 @@
         }
       }
 
-      // Sends a chat message
+      // Sends a song message
       function searchSong() {
         $("#search-results").empty();
 
@@ -1893,8 +1955,7 @@
 
                 var itemContainer = $("<div>").attr({
                   "class": "song-container",
-                  "data-index": index,
-                  "data-image": element.album.images[0].url
+                  "data-index": index
                 });
 
                 itemContainer.append(song);
@@ -1919,18 +1980,22 @@
 
       // Adds the visual chat message to the message list
       function addChatMessage(data, options) {
+        console.log('addChatMessage: ' + selectedSong);
+
         var $usernameDiv = $('<span class="username"/>')
           .text(data.username)
           .css('color', getUsernameColor(data.username));
 
         var $messageBodyDiv = $('<span class="messageBody">')
-          .text(data.message);
+          .text(`${data.selectedSong.name} - ${data.selectedSong.artists[0].name}`);
 
         var $messageDiv = $('<li class="message"/>')
           .data('username', data.username)
           .append($usernameDiv, $messageBodyDiv);
 
-        addMessageElement($messageDiv, options);
+        console.log('addChatMessage: ' + selectedSong);
+
+        addMessageElement($messageDiv, options, data.selectedSong);
       }
 
       // Adds a message element to the messages and scrolls to the bottom
@@ -1938,7 +2003,7 @@
       // options.fade - If the element should fade-in (default = true)
       // options.prepend - If the element should prepend
       //   all other messages (default = false)
-      function addMessageElement(el, options) {
+      function addMessageElement(el, options, selectedSong) {
         var $el = $(el);
 
         // Setup default options
@@ -1958,10 +2023,21 @@
         }
         if (options.prepend) {
           $playlistQueue.prepend($el);
+          q.add(selectedSong);
         } else {
           $playlistQueue.append($el);
+          q.add(selectedSong);
         }
         $playlistQueue[0].scrollTop = $playlistQueue[0].scrollHeight;
+
+        if (q.size() === 1) {
+          mainContainer.innerHTML = template(q.first());
+          playSong();
+        }
+
+        // selectedSongInfo = selectedSong;
+        console.log('addMessageElement: ' + selectedSong);
+        // console.log('song info: ' + selectedSongInfo);
 
         // console.log(currentSong);
         // mainContainer.innerHTML = template(currentSong);
@@ -2089,29 +2165,37 @@
 
       $(document).on("click", "#search-results > .song-container", function () {
         $("#search-results").empty();
-        var message = $(this)[0].innerText;
-        var data = searchItems[$(this)[0].dataset.index];
-        // Prevent markup from being injected into the message
-        // message = cleanInput(message);
+        // var message = $(this)[0].innerText;
+        selectedSong = searchItems[$(this)[0].dataset.index];
+        console.log(selectedSong);
         // if there is a non-empty message and a socket connection
-        if (message && connected) {
+        if (selectedSong && connected) {
           $searchBar.val('');
           addChatMessage({
             username: username,
-            message: message
+            selectedSong: selectedSong
           });
 
           // tell server to execute 'new message' and send along one parameter
-          socket.emit('new message', message);
-          spotify.play({ "uris": [data.uri] }, function (err, data) {
-            if (err) {
-              console.error('Something went wrong!');
-            } else {
-              console.log('playing song');
-              console.log(data);
-            }
-          })
+          socket.emit('new message', selectedSong);
         }
+
+        // q.data.forEach(element => {
+        //   console.log(element.name);
+        // });
+
+        for (let i = 0; i < q.size(); i++) {
+          console.log(q.data[i].name);
+        }
+
+        // spotify.play({ "uris": [selectedSong.uri] }, function (err, data) {
+        //   if (err) {
+        //     console.error('Something went wrong!');
+        //   } else {
+        //     console.log('playing song');
+        //     console.log(selectedSong);
+        //   }
+        // })
       });
 
     });
