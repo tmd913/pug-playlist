@@ -21,7 +21,7 @@ module.exports = function (app, client_id, client_secret, redirect_uri) {
     var stateKey = 'spotify_auth_state';
 
     app.get('/', function (req, res) {
-        res.sendFile(path.join(__dirname, '../public/login.html'));
+        res.sendFile(path.join(__dirname, '../public/index.html'));
     });
 
     app.get('/login', function (req, res) {

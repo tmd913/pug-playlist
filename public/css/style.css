@@ -1,5 +1,5 @@
 body { 
-    background: url(cool-background.png) no-repeat center center fixed; 
+    background: url('../images/cool-background.png') no-repeat center center fixed; 
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -119,12 +119,9 @@ span.psw {
 
 /* Modal Content/Box */
 .modal-content {
-    background-color:burlywood;
     margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
-    border: 1px solid #888;
     width: 50%; /* Could be more or less, depending on screen size */
     /* position: static; */
-    float: left;
 }
 
 /* The Close Button (x) */
