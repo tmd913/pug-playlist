@@ -128,6 +128,7 @@ module.exports = function (app, client_id, client_secret, redirect_uri) {
     });
 
     app.get('/user', function (req, res) {
+        // res.sendFile(path.join(__dirname, '../public/room.html'));
         res.sendFile(path.join(__dirname, '../public/user.html'));
     });
 

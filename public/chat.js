@@ -2,9 +2,9 @@
 // as well as the github repo at https://github.com/socketio/socket.io/blob/master/examples/chat/public/main.js and modified to meet the needs of our application.
 
 
-$(function () {
+$.get('/credentials', function (data) {
+    console.log(data);
     var FADE_TIME = 550; // ms
-    var TYPING_TIMER_LENGTH = 400; // ms
     var COLORS = [
         '#001f3f ', '#0074D9', '#7FDBFF', '#39CCCC',
         '#7FDBFF', '#GREEN', '#7FDBFF', '#01FF70',
@@ -162,8 +162,6 @@ $(function () {
         if (event.which === 13) {
             if (username) {
                 sendSong();
-                socket.emit('stop typing');
-                typing = false;
             } else {
                 setUsername();
             }

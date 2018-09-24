@@ -1746,22 +1746,21 @@
 
     var mainContainer = document.getElementById('js-main-container');
 
+    var searchItems = [];
+    // var currentSongInfo;
+
     var template = function (data) {
       return `
     <div class="main-wrapper">
       <div class="now-playing__img">
-        <img src="${data.item.album.images[0].url}">
+        <img src="${data.album.images[0].url}">
       </div>
       <div class="now-playing__side">
-        <div class="now-playing__name">${data.item.name}</div>
-        <div class="now-playing__artist">${data.item.artists[0].name}</div>
-        <div class="now-playing__status">${data.is_playing ? 'Playing' : 'Paused'}</div>
-        <div class="progress">
-          <div class="progress__bar" style="width:${data.progress_ms * 100 / data.item.duration_ms}%"></div>
-        </div>
+        <div class="now-playing__name">${data.name}</div>
+        <div class="now-playing__artist">${data.artists[0].name}</div>
       </div>
     </div>
-    <div class="background" style="background-image:url(${data.item.album.images[0].url})"></div>
+    <div class="background" style="background-image:url(${data.album.images[0].url})"></div>
   `;
     };
 
@@ -1784,15 +1783,6 @@
         // Playback status updates
         player.addListener('player_state_changed', state => {
           console.log(state);
-          spotify.getMyCurrentPlayingTrack({}, function (err, data) {
-            if (err) {
-              console.log('Something went wrong!');
-            } else {
-              console.log(data.item.name);
-              mainContainer.innerHTML = template(data);
-              console.log(template(data));
-            }
-          });
         });
 
         // Ready
@@ -1813,6 +1803,256 @@
 
       $("#access-token").text(access_token);
       $("#refresh-token").text(refresh_token);
+
+      var FADE_TIME = 550; // ms
+      var COLORS = [
+        '#001f3f ', '#0074D9', '#7FDBFF', '#39CCCC',
+        '#7FDBFF', '#GREEN', '#7FDBFF', '#01FF70',
+        '#FF851B', '#FF4136', '#F012BE', '#B10DC9'
+      ];
+
+      // Initialize variables
+      var $window = $(window);
+      var $usernameInput = $('.usernameInput'); // Input for username
+      var $playlistHistory = $('.playlistHistory'); // where songs that have already been played are display 
+      var $playlistCurrent = $('.playlistCurrent'); // where the current song is displayed
+      var $playlistQueue = $('.playlistQueue'); // where new songs are added
+      var $searchBar = $('.searchBar'); // Input message input box
+
+      var $usernamePage = $('.usernamePage'); // The page where the user enters display name
+      var $playlist = $('.playlist'); // The playlist page
+      var $events = $('.events'); // The events box
+
+      // Prompt for setting a username
+      var username;
+      var connected = false;
+      var $currentInput = $usernameInput.focus();
+
+      var socket = io();
+
+      function addParticipantsMessage(data) {
+        var message = '';
+        if (data.numUsers === 1) {
+          message += "1 active user";
+        } else {
+          message += data.numUsers + " active users";
+        }
+
+        log(message);
+      }
+
+      // Sets the client's username
+      function setUsername() {
+        username = cleanInput($usernameInput.val().trim() + ": ");
+
+        // If the username is valid
+        if (username) {
+          $usernamePage.fadeOut();
+          $playlist.removeClass("display-none");
+          $events.removeClass("display-none");
+          $playlist.show();
+          $usernamePage.off('click');
+          $currentInput = $searchBar.focus();
+
+          // Tell the server your username
+          console.log(socket.emit('add user', username));
+          socket.emit('add user', username);
+        }
+      }
+
+      // Sends a chat message
+      function searchSong() {
+        $("#search-results").empty();
+
+        var songName = $(".searchBar").val();
+        songName = cleanInput(songName);
+        searchItems = [];
+        var index = 0;
+
+        spotify.searchTracks(
+          `track: ${songName}`,
+          { limit: 10, offset: 0 },
+          function (err, data) {
+            if (err) {
+              console.error('Something went wrong!');
+            } else {
+              data.tracks.items.forEach(element => {
+                searchItems.push(element);
+              });
+
+              searchItems.forEach(element => {
+                var song = $("<p>");
+                var name = element.name;
+                var artistStr = "";
+
+                element.artists.forEach(artist => {
+                  artistStr += `${artist.name}, `;
+                });
+                artistStr = artistStr.substring(0, artistStr.length - 2);
+                song.text(`${name} - ${artistStr}`);
+
+                var itemContainer = $("<div>").attr({
+                  "class": "song-container",
+                  "data-index": index,
+                  "data-image": element.album.images[0].url
+                });
+
+                itemContainer.append(song);
+                $("#search-results").append(itemContainer);
+
+                index++;
+              });
+
+              console.log(searchItems);
+            }
+          }
+        );
+      }
+
+      // Log a message
+      function log(message, options) {
+        var $el = $('<div>').addClass('log').text(message);
+        $el.hide().fadeIn(FADE_TIME);
+        $events.append($el);
+        $events[0].scrollTop = $events[0].scrollHeight;
+      }
+
+      // Adds the visual chat message to the message list
+      function addChatMessage(data, options) {
+        var $usernameDiv = $('<span class="username"/>')
+          .text(data.username)
+          .css('color', getUsernameColor(data.username));
+
+        var $messageBodyDiv = $('<span class="messageBody">')
+          .text(data.message);
+
+        var $messageDiv = $('<li class="message"/>')
+          .data('username', data.username)
+          .append($usernameDiv, $messageBodyDiv);
+
+        addMessageElement($messageDiv, options);
+      }
+
+      // Adds a message element to the messages and scrolls to the bottom
+      // el - The element to add as a message
+      // options.fade - If the element should fade-in (default = true)
+      // options.prepend - If the element should prepend
+      //   all other messages (default = false)
+      function addMessageElement(el, options) {
+        var $el = $(el);
+
+        // Setup default options
+        if (!options) {
+          options = {};
+        }
+        if (typeof options.fade === 'undefined') {
+          options.fade = true;
+        }
+        if (typeof options.prepend === 'undefined') {
+          options.prepend = false;
+        }
+
+        // Apply options
+        if (options.fade) {
+          $el.hide().fadeIn(FADE_TIME);
+        }
+        if (options.prepend) {
+          $playlistQueue.prepend($el);
+        } else {
+          $playlistQueue.append($el);
+        }
+        $playlistQueue[0].scrollTop = $playlistQueue[0].scrollHeight;
+
+        // console.log(currentSong);
+        // mainContainer.innerHTML = template(currentSong);
+      }
+
+      // Prevents input from having injected markup
+      function cleanInput(input) {
+        return $('<div/>').text(input).html();
+      }
+
+      // Gets the color of a username through our hash function
+      function getUsernameColor(username) {
+        // Compute hash code
+        var hash = 7;
+        for (var i = 0; i < username.length; i++) {
+          hash = username.charCodeAt(i) + (hash << 5) - hash;
+        }
+        // Calculate color
+        var index = Math.abs(hash % COLORS.length);
+        return COLORS[index];
+      }
+
+      // Keyboard events
+
+      $window.keydown(event => {
+        // Auto-focus the current input when a key is typed
+        if (!(event.ctrlKey || event.metaKey || event.altKey)) {
+          $currentInput.focus();
+        }
+        // When the client hits ENTER on their keyboard
+        if (event.which === 13) {
+          if (username) {
+            searchSong();
+          } else {
+            setUsername();
+          }
+        }
+      });
+
+      // Click events
+
+      // Focus input when clicking anywhere on login page
+      $usernamePage.click(() => {
+        $currentInput.focus();
+      });
+
+      // Focus input when clicking on the message input's border
+      $searchBar.click(() => {
+        $searchBar.focus();
+      });
+
+      // Socket events
+
+      // Whenever the server emits 'login', log the login message
+      socket.on('login', (data) => {
+        connected = true;
+        addParticipantsMessage(data);
+      });
+
+      // Whenever the server emits 'new message', update the chat body
+      socket.on('new message', (data) => {
+        addChatMessage(data);
+      });
+
+      // Whenever the server emits 'user joined', log it in the chat body
+      socket.on('user joined', (data) => {
+        log(data.username + ' joined');
+        addParticipantsMessage(data);
+
+      });
+
+      // Whenever the server emits 'user left', log it in the chat body
+      socket.on('user left', (data) => {
+        log(data.username + ' left');
+        addParticipantsMessage(data);
+      });
+
+      socket.on('disconnect', () => {
+        log('you have been disconnected');
+      });
+
+      socket.on('reconnect', () => {
+        log('you have been reconnected');
+        if (username) {
+          socket.emit('add user', username);
+        }
+      });
+
+      socket.on('reconnect_error', () => {
+        log('attempt to reconnect has failed');
+      });
 
       $.ajax({
         url: 'https://api.spotify.com/v1/me',
@@ -1847,47 +2087,31 @@
         });
       });
 
-      $("#search-song").on("click", function () {
+      $(document).on("click", "#search-results > .song-container", function () {
         $("#search-results").empty();
+        var message = $(this)[0].innerText;
+        var data = searchItems[$(this)[0].dataset.index];
+        // Prevent markup from being injected into the message
+        // message = cleanInput(message);
+        // if there is a non-empty message and a socket connection
+        if (message && connected) {
+          $searchBar.val('');
+          addChatMessage({
+            username: username,
+            message: message
+          });
 
-        var songName = $("#song-text").val();
-        var items = [];
-
-        spotify.searchTracks(
-          `track: ${songName}`,
-          { limit: 10, offset: 0 },
-          function (err, data) {
+          // tell server to execute 'new message' and send along one parameter
+          socket.emit('new message', message);
+          spotify.play({ "uris": [data.uri] }, function (err, data) {
             if (err) {
               console.error('Something went wrong!');
             } else {
-              data.tracks.items.forEach(element => {
-                items.push(element);
-              });
-
-              items.forEach(element => {
-                var itemContainer = $("<div>").attr("class", "song-container");
-                var song = $("<p>");
-                var name = element.name;
-                var artistStr = "";
-
-                element.artists.forEach(artist => {
-                  artistStr += `${artist.name}, `;
-                });
-                artistStr = artistStr.substring(0, artistStr.length - 2);
-
-                song.text(`${name} - ${artistStr}`);
-                itemContainer.append(song);
-                $("#search-results").append(itemContainer);
-              });
+              console.log('playing song');
+              console.log(data);
             }
-          }
-        );
-
-      });
-
-      $(document).on("click", "#search-results > .song-container", function () {
-        $("#search-results").empty();
-        $("#song-queue").append($(this));
+          })
+        }
       });
 
     });
