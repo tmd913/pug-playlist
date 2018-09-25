@@ -2,60 +2,55 @@
 <html>
 
 <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Pug Login</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" type="text/css" media="screen" href="./css/style.css" />
-  <!-- Compiled and minified CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-  <!-- Compiled and minified JavaScript -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-
-  <style>
-    #spotify {
-      display: inline-block;
-      width: 100%;
-      background-color: rgb(70, 212, 35)!important;
-    }
-  </style>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Pug Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,700" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="screen" href="./css/style.css" />
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </head>
 
 <body>
 
-  <div class="topnav">
-    <a class="active" href="#home">About</a>
-  </div>
-
-  <form class="modal-content animate" action="/action_page.php">
-    <a id="spotify" class="waves-effect waves-light btn" href="/login">Login with Spotify</a>
-      <i class="material-icons right"></i>
-    </a>
-
-    <br>
-    <br>
-
-    <button class="btn waves-effect waves-light" type="submit" name="action">Continue as Guest
-      <i class="material-icons right"></i>
-    </button>
-
-    <div class="footer">
-      <p>Pug Room</p>
+    <div class="topnav">
+        <img src="./images/pug.png" alt="pug logo" id="pug">
+        <p id="title">Pug</p>
+        <a class="active" href="#">About</a>
     </div>
-  </form>
 
-  <script>
-    // Get the modal
-    var modal = document.getElementById('id01');
+    <form class="modal-content animate" action="/action_page.php">
+        <a id="spotify" class="waves-effect waves-light btn" href="/login">Login with Spotify
+            <i class="material-icons right"></i>
+        </a>
 
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function (event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
-      }
-    }
+        <br>
+        <br>
 
-  </script>
+        <a id="guest" class="btn waves-effect waves-light" href="#">Continue as Guest
+            <i class="material-icons right"></i>
+        </a>
+
+        <div class="footer">
+            <p>Pug Room</p>
+        </div>
+    </form>
+
+    <script>
+        // Get the modal
+        var modal = document.getElementById('id01');
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+    </script>
 </body>
 
 </html>

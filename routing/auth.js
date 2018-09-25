@@ -69,11 +69,6 @@ module.exports = function (app, client_id, client_secret, redirect_uri) {
 
             request.post(authOptions, function (error, response, body) {
                 if (!error && response.statusCode === 200) {
-                    console.log('-----------------');
-                    console.log('Auth');
-                    console.log('-----------------');
-                    console.log(body);
-
                     var access_token = body.access_token;
                     var refresh_token = body.refresh_token;
 
@@ -92,30 +87,6 @@ module.exports = function (app, client_id, client_secret, redirect_uri) {
                         json: true
                     };
 
-                    // use the access token to access the Spotify Web API
-                    request.get(options, function (error, response, body) {
-                        console.log('-----------------');
-                        console.log('User');
-                        console.log('-----------------');
-                        console.log(body);
-                        var user_id = body.id;
-
-                        options = {
-                            url: 'https://api.spotify.com/v1/users/' + user_id + '/playlists',
-                            headers: { 'Authorization': 'Bearer ' + access_token },
-                            json: true
-                        };
-
-                        // use the access token to access the Spotify Web API
-                        request.get(options, function (error, response, body) {
-                            console.log('-----------------');
-                            console.log('User Playlist');
-                            console.log('-----------------');
-                            console.log(body.items[0]);
-                            console.log('-----------------');
-                        });
-                    });
-
                     res.redirect('/user');
                 } else {
                     res.redirect('/#' +
@@ -128,7 +99,6 @@ module.exports = function (app, client_id, client_secret, redirect_uri) {
     });
 
     app.get('/user', function (req, res) {
-        // res.sendFile(path.join(__dirname, '../public/room.html'));
         res.sendFile(path.join(__dirname, '../public/user.html'));
     });
 
