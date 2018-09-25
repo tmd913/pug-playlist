@@ -1,4 +1,4 @@
 module.exports = {
-    HOST: 'http://localhost:3000'
+    HOST: 'https://tranquil-anchorage-49845.herokuapp.com/'
   };
   
