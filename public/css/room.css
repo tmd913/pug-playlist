@@ -1,3 +1,146 @@
-/* body {
-    background: url('../images/movingBackground.png');
-} */
+body {
+    background: url('../images/room.jpg') no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    text-shadow:
+		-1px -1px 0 #000,
+		1px -1px 0 #000,
+		-1px 1px 0 #000,
+		1px 1px 0 #000;
+}
+
+i {
+    text-shadow: none;
+}
+
+.container {
+    padding: 5px 20px;
+}
+
+#pug {
+    width: 80px;
+    height: 60px;
+    border-radius: 10px;
+}
+
+#title {
+    font-size: 48px;
+    color: #000;
+    text-shadow:
+		-1px -1px 0 rgb(255, 254, 251),
+		1px -1px 0 rgb(255, 254, 251),
+		-1px 1px 0 rgb(255, 254, 251),
+		1px 1px 0 rgb(255, 254, 251);
+}
+
+h1 {
+    font-size: 40px;
+    font-weight: 700;
+    text-shadow:
+		-1px -1px 0 #000,
+		1px -1px 0 #000,
+		-1px 1px 0 #000,
+		1px 1px 0 #000;
+}
+
+h2 {
+    text-shadow:
+		-1px -1px 0 #000,
+		1px -1px 0 #000,
+		-1px 1px 0 #000,
+		1px 1px 0 #000;
+}
+
+img {
+    height: 100%;
+    float: left;
+    margin-right: 10px;
+}
+
+.song-container {
+    margin: 10px;
+}
+
+.display-none {
+    display: none;
+}
+
+input {
+    color: #000;
+}
+
+label {
+    font-size: 20px;
+}
+
+.song-container:hover {
+    cursor: pointer;
+}
+
+p, span {
+    font-size: 20px!important;
+}
+
+.song-container > p {
+    margin: 0;
+    font-size: 16px!important;
+}
+
+.now-playing__name, .now-playing__artist, .now-playing__album {
+    margin: 0!important;
+    padding: 0!important;
+    font-size: 36px!important;
+}
+
+.playlistQueue > li {
+    margin-bottom: 10px!important;
+}
+
+.playlistQueue > div > p {
+    margin-bottom: 10px!important;
+}
+
+.playlistHistory > p {
+    margin-bottom: 10px!important;
+}
+
+.playlistQueue, .playlistHistory {
+    height: 55vh;
+    overflow-y: auto;
+}
+
+#queue-container, #history-container {
+    height: 60vh;
+}
+
+#current-container {
+    height: 35vh;
+}
+
+#search-container {
+    height: 100vh;
+}
+
+#search-results {
+    height: 60vh;
+    overflow: scroll;
+}
+
+.events {
+    height: 10vh;
+    overflow: scroll;
+}
+
+input {
+    width: 100%!important;
+}
+
+.now-playing__img {
+    width: 18%;
+}

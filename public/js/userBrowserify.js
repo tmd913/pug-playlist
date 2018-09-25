@@ -1750,14 +1750,20 @@
     var selectedSong;
 
     var template = function (data) {
+      var artistStr = '';
+      data.artists.forEach(element => {
+        artistStr += element.name + ', '
+      });
+      artistStr = artistStr.substring(0, artistStr.length - 2);
       return `
     <div class="main-wrapper">
       <div class="now-playing__img">
-        <img src="${data.album.images[0].url}">
+        <img class="ui fluid image" src="${data.album.images[0].url}">
       </div>
       <div class="now-playing__side">
-        <div class="now-playing__name">${data.name}</div>
-        <div class="now-playing__artist">${data.artists[0].name}</div>
+        <p class="now-playing__name">Title: ${data.name}</p>
+        <p class="now-playing__artist">Artist: ${artistStr}</p>
+        <p class="now-playing__album">Album: ${data.album.name}</p>
       </div>
     </div>
     <div class="background" style="background-image:url(${data.album.images[0].url})"></div>
@@ -1863,12 +1869,23 @@
       // else, add to playlist queue
       // add previous song to history
       function nextSong(queue) {
-        $playlistHistory.append(queue.first);
+        var addHistory = $("<p>").text(`${queue.first().name} - ${queue.first().artists[0].name}`);
+        $playlistHistory.prepend(addHistory);
         queue.remove();
-        $playlistCurrent.empty();
-        $playlistCurrent.append(queue.first);
+        // $playlistCurrent.empty();
+        // $playlistCurrent.append(queue.first);
         console.log(queue.first().name);
         mainContainer.innerHTML = template(queue.first());
+        var displayQueue = $("<div>");
+        $playlistQueue.empty();
+        console.log(queue.size());
+        for (let i = 1; i < queue.size(); i++) {
+          console.log(queue.data[i].name);
+          console.log(queue.data[i].artists[0].name);
+          var song = $("<p>").text(`${queue.data[i].name} - ${queue.data[i].artists[0].name}`);
+          displayQueue.append(song);
+        }
+        $playlistQueue.append(displayQueue);
         playSong();
       }
 
@@ -1883,13 +1900,13 @@
           }
         })
 
-        // setTimeout( () => {
-        //   nextSong(q);
-        // }, q.first().duration_ms);
-
         setTimeout( () => {
           nextSong(q);
-        }, 10000);
+        }, q.first().duration_ms);
+
+        // setTimeout(() => {
+        //   nextSong(q);
+        // }, 15000);
       }
 
       function addParticipantsMessage(data) {
@@ -1927,13 +1944,14 @@
         $("#search-results").empty();
 
         var songName = $(".searchBar").val();
+        console.log(songName);
         songName = cleanInput(songName);
         searchItems = [];
         var index = 0;
 
         spotify.searchTracks(
           `track: ${songName}`,
-          { limit: 10, offset: 0 },
+          { limit: 20, offset: 0 },
           function (err, data) {
             if (err) {
               console.error('Something went wrong!');
@@ -2017,22 +2035,24 @@
           options.prepend = false;
         }
 
-        // Apply options
-        if (options.fade) {
-          $el.hide().fadeIn(FADE_TIME);
-        }
-        if (options.prepend) {
-          $playlistQueue.prepend($el);
+        if (q.size() === 0) {
           q.add(selectedSong);
-        } else {
-          $playlistQueue.append($el);
-          q.add(selectedSong);
-        }
-        $playlistQueue[0].scrollTop = $playlistQueue[0].scrollHeight;
-
-        if (q.size() === 1) {
           mainContainer.innerHTML = template(q.first());
           playSong();
+        } else {
+          // Apply options
+          if (options.fade) {
+            $el.hide().fadeIn(FADE_TIME);
+          }
+          if (options.prepend) {
+            $playlistQueue.prepend($el);
+            q.add(selectedSong);
+          } else {
+            $playlistQueue.append($el);
+            q.add(selectedSong);
+          }
+          // $playlistQueue[0].scrollTop = $playlistQueue[0].scrollHeight;
+          // $playlistHistory[0].scrollTop = $playlistHistory[0].scrollHeight;
         }
 
         // selectedSongInfo = selectedSong;
@@ -2062,19 +2082,21 @@
 
       // Keyboard events
 
-      $window.keydown(event => {
+      $window.keyup(event => {
         // Auto-focus the current input when a key is typed
         if (!(event.ctrlKey || event.metaKey || event.altKey)) {
           $currentInput.focus();
         }
         // When the client hits ENTER on their keyboard
-        if (event.which === 13) {
-          if (username) {
-            searchSong();
-          } else {
+        // if (event.which === 13) {
+        if (username) {
+          searchSong();
+        } else {
+          if (event.which === 13) {
             setUsername();
           }
         }
+        // }
       });
 
       // Click events
