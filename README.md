@@ -6,7 +6,7 @@ Collaborative Spotify listening room where multiple users can search Spotify for
 
 ## Technology Used
 
-Javascript, Node, Socket.io, Spotify API, OAuth, Materialize
+Javascript, Node, Express, Socket.io, Spotify API, OAuth, Materialize
 
 https://pug-playlists.herokuapp.com/
 
